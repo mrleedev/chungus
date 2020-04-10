@@ -11,6 +11,6 @@ class ChungusPluginTest {
         project.plugins.apply("dev.mrlee.gradle.chungus")
 
         // Verify the result
-        assertNotNull(project.tasks.findByName("greeting"))
+        assertNotNull(project.tasks.findByName("openApiFetch"))
     }
 }

@@ -7,9 +7,11 @@ import org.gradle.api.Plugin
 class ChungusPlugin: Plugin<Project> {
     override fun apply(project: Project) {
         // Register a task
-        project.tasks.register("greeting") { task ->
-            task.doLast {
-                println("Hello from plugin 'chungus.greeting'")
+        project.tasks.register("openApiFetch") { task ->
+            task.doFirst {
+                val client = ApiRegistryClient()
+                val json = client.fetchOpenApiSpecForService()
+                println(json)
             }
         }
     }
