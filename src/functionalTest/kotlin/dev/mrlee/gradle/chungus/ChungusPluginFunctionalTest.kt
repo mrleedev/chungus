@@ -36,7 +36,7 @@ class ChungusPluginFunctionalTest {
         val runner = GradleRunner.create()
         runner.forwardOutput()
         runner.withPluginClasspath()
-        runner.withArguments("buildCache", "openApiFetch")
+        runner.withArguments("openApiFetch")
         runner.withProjectDir(projectDir)
 
         runner.build()

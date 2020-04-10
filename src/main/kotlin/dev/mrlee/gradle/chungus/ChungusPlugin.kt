@@ -20,6 +20,8 @@ class ChungusPlugin: Plugin<Project> {
         }
 
         project.tasks.register("openApiFetch") { task ->
+            task.dependsOn("buildCache")
+
             task.outputs.cacheIf { true }
 
             task.doFirst {
