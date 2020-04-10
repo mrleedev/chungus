@@ -21,6 +21,15 @@ class ChungusPluginFunctionalTest {
             plugins {
                 id('dev.mrlee.gradle.chungus')
             }
+            
+            chungus {
+                services {
+                    petstore {
+                        url = "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml"
+                        format = "yaml"
+                    }
+                }
+            }
         """)
 
         // Run the build
@@ -29,9 +38,9 @@ class ChungusPluginFunctionalTest {
         runner.withPluginClasspath()
         runner.withArguments("buildCache", "openApiFetch")
         runner.withProjectDir(projectDir)
-        val result = runner.build()
 
-        // Verify the result
-        assertTrue(projectDir.resolve("build/chungus/openapi/test.json").exists())
+        runner.build()
+
+        assertTrue(projectDir.resolve("build/chungus/openapi/petstore.yaml").exists())
     }
 }

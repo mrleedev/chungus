@@ -2,28 +2,38 @@ package dev.mrlee.gradle.chungus
 
 import org.gradle.api.Project
 import org.gradle.api.Plugin
-import java.io.File
+import java.lang.IllegalStateException
 
+private const val PLUGIN_NAME = "chungus"
+private const val OPENAPI_CACHE = "openapi"
 
 class ChungusPlugin: Plugin<Project> {
     override fun apply(project: Project) {
+        val extension = project.extensions.create(PLUGIN_NAME, ChungusExtension::class.java, project)
 
         project.tasks.register("buildCache") {
-            it.outputs.dir("${project.buildDir}/chungus")
+            it.outputs.dir(project.buildDir.resolve(PLUGIN_NAME))
 
             it.doFirst {
-                File(project.buildDir, "chungus/openapi").mkdir()
+                project.buildDir.resolve("${PLUGIN_NAME}/${OPENAPI_CACHE}").mkdir()
             }
         }
 
-        project.tasks.register("openApiFetch") {
-            it.outputs.cacheIf { true }
+        project.tasks.register("openApiFetch") { task ->
+            task.outputs.cacheIf { true }
 
-            it.doFirst {
+            task.doFirst {
                 val client = ApiRegistryClient()
-                val json = client.fetchOpenApiSpecForService()
-                File("${project.buildDir}/chungus/openapi", "test.json").writeText(json)
+
+                extension.services.all { service ->
+                    val json = client.fetchOpenApiSpecForService(service.url)
+                    project.buildDir.resolve("${PLUGIN_NAME}/${OPENAPI_CACHE}/${service.name}.${service.format}").writeText(json)
+                }
             }
         }
     }
 }
+
+internal fun Project.chungus(): ChungusExtension =
+        extensions.getByName("chungus") as? ChungusExtension
+                ?: throw  IllegalStateException("Chungus extension is not of correct type")
