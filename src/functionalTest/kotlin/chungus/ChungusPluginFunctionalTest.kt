@@ -27,11 +27,11 @@ class ChungusPluginFunctionalTest {
         val runner = GradleRunner.create()
         runner.forwardOutput()
         runner.withPluginClasspath()
-        runner.withArguments("openApiFetch")
+        runner.withArguments("buildCache", "openApiFetch")
         runner.withProjectDir(projectDir)
         val result = runner.build()
 
         // Verify the result
-        assertTrue(result.output.contains("Hello from plugin 'chungus.greeting'"))
+        assertTrue(projectDir.resolve("build/chungus/openapi/test.json").exists())
     }
 }
