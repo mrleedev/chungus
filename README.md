@@ -22,3 +22,14 @@ chungus {
 ```
 
 This will generate a `petstore` API client and make it available to your project.
+
+## Progress
+
+[x] - Create plugin and minimal DSL
+[x] - Fetch and store JSON in build cache
+[x] - Functional testing of said behaviour
+[ ] - Convert JSON/YAMLS into generated clients
+[ ] - Expose clients as dependencies in the build
+[ ] - Ensure clients are properly named/not-conflicting
+[ ] - Functional testing of generated clients from config
+[ ] - [Stretch] autodiscover specs from configured domains
