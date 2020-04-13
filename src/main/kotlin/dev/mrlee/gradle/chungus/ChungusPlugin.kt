@@ -22,9 +22,15 @@ class ChungusPlugin: Plugin<Project> {
             val config = project.extensions.create(pluginGroup, ChungusConfig::class.java)
 
             tasks.apply {
-                create("initCache", InitCacheTask::class.java, config)
-                create("fetchSpecs", FetchSpecsTask::class.java, config).dependsOn("initCache")
-                create("buildClients", BuildClientsTask::class.java, config).dependsOn("fetchSpecs")
+                register("initCache", InitCacheTask::class.java, config)
+
+                register("fetchSpecs", FetchSpecsTask::class.java, config).configure {
+                    it.dependsOn("initCache")
+                }
+
+                register("buildClients", BuildClientsTask::class.java, config).configure {
+                    it.dependsOn("fetchSpecs")
+                }
             }
         }
     }
