@@ -19,7 +19,7 @@ class ChungusPlugin: Plugin<Project> {
             }
         }
 
-        project.tasks.register("openApiFetch") { task ->
+        project.tasks.register("fetchOpenApiSpecs") { task ->
             task.dependsOn("buildCache")
 
             task.outputs.cacheIf { true }
@@ -31,6 +31,12 @@ class ChungusPlugin: Plugin<Project> {
                     val json = client.fetchOpenApiSpecForService(service.url)
                     project.buildDir.resolve("${PLUGIN_NAME}/${OPENAPI_CACHE}/${service.name}.${service.format}").writeText(json)
                 }
+            }
+        }
+
+        project.pluginManager.withPlugin("org.openapi.generator") { plugin ->
+            project.tasks.register("generateOpenApiCode") { task ->
+                task.dependsOn("fetchOpenApiSpecs")
             }
         }
     }

@@ -19,7 +19,8 @@ class ChungusPluginFunctionalTest {
         projectDir.resolve("settings.gradle").writeText("")
         projectDir.resolve("build.gradle").writeText("""
             plugins {
-                id('dev.mrlee.gradle.chungus')
+                id("dev.mrlee.gradle.chungus")
+                id("org.openapi.generator") version "4.3.0"
             }
             
             chungus {
@@ -36,7 +37,7 @@ class ChungusPluginFunctionalTest {
         val runner = GradleRunner.create()
         runner.forwardOutput()
         runner.withPluginClasspath()
-        runner.withArguments("openApiFetch")
+        runner.withArguments("generateOpenApiCode")
         runner.withProjectDir(projectDir)
 
         runner.build()
