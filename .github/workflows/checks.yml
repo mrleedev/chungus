@@ -1,5 +1,5 @@
 # This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
-name: Unit tests
+name: Tests
 
 on:
   push:
@@ -19,5 +19,5 @@ jobs:
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-    - name: Run unit tests
-      run: gradle cleanTest
+    - name: Run unit and functional tests
+      run: gradle clean check
