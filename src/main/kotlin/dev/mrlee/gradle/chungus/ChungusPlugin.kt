@@ -6,18 +6,19 @@ import org.gradle.api.Project
 import org.gradle.api.Plugin
 import java.lang.IllegalStateException
 
-private const val PLUGIN_NAME = "chungus"
-private const val OPENAPI_CACHE = "openapi"
-
 class ChungusPlugin: Plugin<Project> {
     override fun apply(project: Project) {
-        val extension = project.extensions.create(PLUGIN_NAME, ChungusExtension::class.java, project)
+        val extension = project.extensions.create("chungus", ChungusExtension::class.java, project)
 
         project.tasks.register("buildCache") {
-            it.outputs.dir(project.buildDir.resolve(PLUGIN_NAME))
+            it.outputs.dirs(
+                project.buildDir.resolve(extension.specDir),
+                project.buildDir.resolve(extension.clientDir)
+            )
 
             it.doFirst {
-                project.buildDir.resolve("${PLUGIN_NAME}/${OPENAPI_CACHE}").mkdir()
+                project.buildDir.resolve(extension.specDir).mkdir()
+                project.buildDir.resolve(extension.clientDir).mkdir()
             }
         }
 
@@ -32,7 +33,7 @@ class ChungusPlugin: Plugin<Project> {
                     extension.services.all { service ->
                         launch {
                             val json = client.fetchOpenApiSpecForService(service.url)
-                            project.buildDir.resolve("${PLUGIN_NAME}/${OPENAPI_CACHE}/${service.name}.${service.format}").writeText(json)
+                            project.buildDir.resolve("${extension.specDir}/${service.name}.${service.format}").writeText(json)
                         }
                     }
                 }

@@ -8,6 +8,9 @@ internal typealias ServicesConfigContainer = NamedDomainObjectContainer<ServiceC
 
 open class ChungusExtension(private val project: Project) {
 
+    var specDir by GradleProperty(project, String::class.java, "chungus/openapi")
+    var clientDir by GradleProperty(project, String::class.java, "chungus/client")
+
     val services: ServicesConfigContainer = project.container(ServiceConfig::class.java) { name ->
         ServiceConfig(name, project)
     }
