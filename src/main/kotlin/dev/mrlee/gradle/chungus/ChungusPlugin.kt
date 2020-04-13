@@ -1,5 +1,7 @@
 package dev.mrlee.gradle.chungus
 
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.gradle.api.Project
 import org.gradle.api.Plugin
 import java.lang.IllegalStateException
@@ -26,15 +28,18 @@ class ChungusPlugin: Plugin<Project> {
 
             task.doFirst {
                 val client = ApiRegistryClient()
-
-                extension.services.all { service ->
-                    val json = client.fetchOpenApiSpecForService(service.url)
-                    project.buildDir.resolve("${PLUGIN_NAME}/${OPENAPI_CACHE}/${service.name}.${service.format}").writeText(json)
+                runBlocking {
+                    extension.services.all { service ->
+                        launch {
+                            val json = client.fetchOpenApiSpecForService(service.url)
+                            project.buildDir.resolve("${PLUGIN_NAME}/${OPENAPI_CACHE}/${service.name}.${service.format}").writeText(json)
+                        }
+                    }
                 }
             }
         }
 
-        project.pluginManager.withPlugin("org.openapi.generator") { plugin ->
+        project.pluginManager.withPlugin("org.openapi.generator") {
             project.tasks.register("generateOpenApiClients") { task ->
                 task.dependsOn("fetchOpenApiSpecs")
             }
