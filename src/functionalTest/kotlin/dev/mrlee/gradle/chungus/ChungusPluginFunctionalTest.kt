@@ -6,13 +6,11 @@ package dev.mrlee.gradle.chungus
 import java.io.File
 import org.gradle.testkit.runner.GradleRunner
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-/**
- * A simple functional test for the 'chungus.greeting' plugin.
- */
 class ChungusPluginFunctionalTest {
-    @Test fun `fetches yaml`() {
+    @Test fun `fetches the yaml for a single service`() {
         // Setup the test build
         val projectDir = File("build/functionalTest")
         projectDir.mkdirs()
@@ -26,7 +24,7 @@ class ChungusPluginFunctionalTest {
             chungus {
                 services {
                     petstore {
-                        url = "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml"
+                        url = uri("https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml")
                         format = "yaml"
                     }
                 }
@@ -37,11 +35,53 @@ class ChungusPluginFunctionalTest {
         val runner = GradleRunner.create()
         runner.forwardOutput()
         runner.withPluginClasspath()
-        runner.withArguments("generateOpenApiClients")
+        runner.withArguments("fetchOpenApiSpecs")
         runner.withProjectDir(projectDir)
 
         runner.build()
 
-        assertTrue(projectDir.resolve("build/chungus/openapi/petstore.yaml").exists())
+        assertTrue(projectDir.resolve("build/chungus/spec/petstore.yaml").exists())
+    }
+
+    @Test fun `fetches the yaml for a multiple services`() {
+        // Setup the test build
+        val projectDir = File("build/functionalTest")
+        projectDir.mkdirs()
+        projectDir.resolve("settings.gradle").writeText("")
+        projectDir.resolve("build.gradle").writeText("""
+            plugins {
+                id("dev.mrlee.gradle.chungus")
+                id("org.openapi.generator") version "4.3.0"
+            }
+            
+            chungus {
+                services {
+                    petstore {
+                        url = uri("https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml")
+                        format = "yaml"
+                    }
+                    uspto {
+                        url = uri("https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/uspto.yaml")
+                        format = "yaml"
+                    }
+                }
+            }
+        """)
+
+        // Run the build
+        val runner = GradleRunner.create()
+        runner.forwardOutput()
+        runner.withPluginClasspath()
+        runner.withArguments("fetchOpenApiSpecs")
+        runner.withProjectDir(projectDir)
+
+        runner.build()
+
+        val expectedFiles = listOf("petstore.yaml", "uspto.yaml")
+
+        projectDir.resolve("build/chungus/spec").listFiles()?.let { files ->
+            val actualFiles = files.map(File::getName)
+            assertEquals(expectedFiles.sorted(), actualFiles.sorted())
+        }
     }
 }

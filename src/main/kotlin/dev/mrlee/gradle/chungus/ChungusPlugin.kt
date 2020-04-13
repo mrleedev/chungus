@@ -1,14 +1,17 @@
 package dev.mrlee.gradle.chungus
 
+import dev.mrlee.gradle.chungus.api.ApiRegistryClient
+import dev.mrlee.gradle.chungus.extension.ChungusExtension
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.gradle.api.Project
 import org.gradle.api.Plugin
 import java.lang.IllegalStateException
 
+@Suppress("unused")
 class ChungusPlugin: Plugin<Project> {
     override fun apply(project: Project) {
-        val extension = project.extensions.create("chungus", ChungusExtension::class.java, project)
+        val extension = project.extensions.create("chungus", ChungusExtension::class.java)
 
         project.tasks.register("buildCache") {
             it.outputs.dirs(
@@ -43,12 +46,13 @@ class ChungusPlugin: Plugin<Project> {
         project.tasks.register("generateOpenApiClients") { task ->
             task.dependsOn("fetchOpenApiSpecs")
 
-            
+
         }
 
     }
 }
 
+@Suppress("unused")
 internal fun Project.chungus(): ChungusExtension =
         extensions.getByName("chungus") as? ChungusExtension
                 ?: throw  IllegalStateException("Chungus extension is not of correct type")
