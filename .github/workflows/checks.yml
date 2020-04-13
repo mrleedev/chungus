@@ -20,4 +20,4 @@ jobs:
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
     - name: Run unit and functional tests
-      run: gradle clean check
+      run: gradle clean check --no-daemon
