@@ -2,8 +2,6 @@
 
 **Automatically use open-api clients from your API registry**
 
-------
-
 ![Tests](https://github.com/mrleedev/chungus/workflows/Tests/badge.svg)
 
 ------
