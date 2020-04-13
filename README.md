@@ -2,6 +2,12 @@
 
 **Automatically use open-api clients from your API registry**
 
+------
+
+![Tests](https://github.com/mrleedev/chungus/workflows/Tests/badge.svg)
+
+------
+
 ## Minimal example
 
 Using the `chungus` plugin alone will simply pull your defined service specs into
