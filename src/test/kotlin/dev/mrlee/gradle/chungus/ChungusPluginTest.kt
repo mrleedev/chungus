@@ -1,16 +1,26 @@
 package dev.mrlee.gradle.chungus
 
+import io.mockk.every
+import io.mockk.mockk
+import org.gradle.api.plugins.AppliedPlugin
 import org.gradle.testfixtures.ProjectBuilder
 import kotlin.test.Test
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class ChungusPluginTest {
-    @Test fun `plugin registers task`() {
-        // Create a test project and apply the plugin
+    @Test fun `fetchOpenApiSpecs task is registered`() {
         val project = ProjectBuilder.builder().build()
         project.plugins.apply("dev.mrlee.gradle.chungus")
 
-        // Verify the result
-        assertNotNull(project.tasks.findByName("openApiFetch"))
+        assertNotNull(project.tasks.findByName("fetchOpenApiSpecs"))
     }
+
+    @Test fun `generateOpenApiClients is not registered by default`() {
+        val project = ProjectBuilder.builder().build()
+        project.plugins.apply("dev.mrlee.gradle.chungus")
+
+        assertNull(project.tasks.findByName("generateOpenApiClients"))
+    }
+
 }
