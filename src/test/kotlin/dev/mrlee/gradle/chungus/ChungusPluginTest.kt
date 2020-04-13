@@ -16,11 +16,10 @@ class ChungusPluginTest {
         assertNotNull(project.tasks.findByName("fetchOpenApiSpecs"))
     }
 
-    @Test fun `generateOpenApiClients is not registered by default`() {
+    @Test fun `generateOpenApiClients is registered`() {
         val project = ProjectBuilder.builder().build()
         project.plugins.apply("dev.mrlee.gradle.chungus")
-
-        assertNull(project.tasks.findByName("generateOpenApiClients"))
+        assertNotNull(project.tasks.findByName("generateOpenApiClients"))
     }
 
 }

@@ -40,11 +40,12 @@ class ChungusPlugin: Plugin<Project> {
             }
         }
 
-        project.pluginManager.withPlugin("org.openapi.generator") {
-            project.tasks.register("generateOpenApiClients") { task ->
-                task.dependsOn("fetchOpenApiSpecs")
-            }
+        project.tasks.register("generateOpenApiClients") { task ->
+            task.dependsOn("fetchOpenApiSpecs")
+
+            
         }
+
     }
 }
 
