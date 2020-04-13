@@ -1,9 +1,11 @@
 package dev.mrlee.gradle.chungus
 
 import org.gradle.testfixtures.ProjectBuilder
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
+@Ignore
 class ChungusPluginTest {
     @Test fun `fetchOpenApiSpecs task is registered`() {
         val project = ProjectBuilder.builder().build()
