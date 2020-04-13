@@ -26,7 +26,7 @@ class CustomiseBuildOutputTest: BaseFunctionalTest() {
             }
         """)
 
-        runBuildWithArgs("fetchOpenApiSpecs")
+        runBuildWithArgs("fetchSpecs")
 
         assertTrue(projectDir.resolve("build/my-spec-folder/petstore.yaml").exists())
     }

@@ -1,58 +1,36 @@
 package dev.mrlee.gradle.chungus
 
-import dev.mrlee.gradle.chungus.api.ApiRegistryClient
-import dev.mrlee.gradle.chungus.extension.ChungusExtension
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import dev.mrlee.gradle.chungus.config.ChungusConfig
+import dev.mrlee.gradle.chungus.task.BuildClientsTask
+import dev.mrlee.gradle.chungus.task.FetchSpecsTask
+import dev.mrlee.gradle.chungus.task.InitCacheTask
 import org.gradle.api.Project
 import org.gradle.api.Plugin
 import java.lang.IllegalStateException
 
+
 @Suppress("unused")
 class ChungusPlugin: Plugin<Project> {
+    companion object {
+        const val pluginGroup = "chungus"
+    }
+
     override fun apply(project: Project) {
-        val extension = project.extensions.create("chungus", ChungusExtension::class.java)
+        project.group = pluginGroup
 
-        project.tasks.register("buildCache") {
-            it.outputs.dirs(
-                project.buildDir.resolve(extension.specDir),
-                project.buildDir.resolve(extension.clientDir)
-            )
+        project.run {
+            val config = project.extensions.create(pluginGroup, ChungusConfig::class.java)
 
-            it.doFirst {
-                project.buildDir.resolve(extension.specDir).mkdir()
-                project.buildDir.resolve(extension.clientDir).mkdir()
+            tasks.apply {
+                create("initCache", InitCacheTask::class.java, config)
+                create("fetchSpecs", FetchSpecsTask::class.java, config).dependsOn("initCache")
+                create("buildClients", BuildClientsTask::class.java, config).dependsOn("fetchSpecs")
             }
         }
-
-        project.tasks.register("fetchOpenApiSpecs") { task ->
-            task.dependsOn("buildCache")
-
-            task.outputs.cacheIf { true }
-
-            task.doFirst {
-                val client = ApiRegistryClient()
-                runBlocking {
-                    extension.services.all { service ->
-                        launch {
-                            val json = client.fetchOpenApiSpecForService(service.url)
-                            project.buildDir.resolve("${extension.specDir}/${service.name}.${service.format}").writeText(json)
-                        }
-                    }
-                }
-            }
-        }
-
-        project.tasks.register("generateOpenApiClients") { task ->
-            task.dependsOn("fetchOpenApiSpecs")
-
-
-        }
-
     }
 }
 
 @Suppress("unused")
-internal fun Project.chungus(): ChungusExtension =
-        extensions.getByName("chungus") as? ChungusExtension
+internal fun Project.chungus(): ChungusConfig =
+        extensions.getByName("chungus") as? ChungusConfig
                 ?: throw  IllegalStateException("Chungus extension is not of correct type")

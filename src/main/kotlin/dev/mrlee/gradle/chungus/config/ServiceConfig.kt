@@ -1,14 +1,14 @@
-package dev.mrlee.gradle.chungus.extension
+package dev.mrlee.gradle.chungus.config
 
 import org.gradle.api.NamedDomainObjectContainer
-import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Nested
 import java.net.URI
-import java.net.URL
 
 
-abstract class ServiceExtension(val name: String) {
+typealias ServicesConfig = NamedDomainObjectContainer<ServiceConfig>
+
+abstract class ServiceConfig(val name: String) {
     @get:Input
     abstract var url : URI
 
@@ -16,7 +16,7 @@ abstract class ServiceExtension(val name: String) {
     abstract var format : String
 
     @get:Nested
-    abstract val client : NamedDomainObjectContainer<ClientExtension>
+    abstract val client : NamedDomainObjectContainer<ClientConfig>
 
     init {
         applyDefaults()

@@ -24,7 +24,7 @@ class FetchOpenApiSpecsTest: BaseFunctionalTest() {
             }
         """)
 
-        runBuildWithArgs("fetchOpenApiSpecs")
+        runBuildWithArgs("fetchSpecs")
 
         assertTrue(projectDir.resolve("build/chungus/spec/petstore.yaml").exists())
     }
@@ -51,7 +51,7 @@ class FetchOpenApiSpecsTest: BaseFunctionalTest() {
             }
         """)
 
-        runBuildWithArgs("fetchOpenApiSpecs")
+        runBuildWithArgs("fetchSpecs")
 
         val expectedFiles = listOf("petstore.yaml", "uspto.yaml")
 
