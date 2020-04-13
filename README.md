@@ -2,9 +2,11 @@
 
 **Automatically use open-api clients from your API registry**
 
-## Example
+## Minimal example
 
-Throw this in your gradle build script, and off you go:
+Using the `chungus` plugin alone will simply pull your defined service specs into
+the build. It would then be up to you to configure your OpenAPI plugin to handle those
+files.
 
 ```gradle
 plugins {
@@ -19,9 +21,35 @@ chungus {
         }
     }
 }
+
+compileJava.dependsOn tasks.fetchOpenApiSpecs
 ```
 
-This will generate a `petstore` API client and make it available to your project.
+## Full-fat example
+
+`chungus` will provide more if it detects the presence of the `org.openapi.generator` plugin, and will—if you so choose—
+generate the client code for you. This will be configurable just as if you were using the plugin by itself.
+
+```gradle
+plugins {
+    id('dev.mrlee.gradle.chungus')
+    id('org.openapi.generator')
+}
+            
+chungus {
+    services {
+        petstore {
+            url = "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml"
+            format = "yaml"
+            generator {
+                ...
+            }
+        }
+    }
+}
+
+compileJava.dependsOn tasks.generateOpenApiClients
+```
 
 ## Progress
 

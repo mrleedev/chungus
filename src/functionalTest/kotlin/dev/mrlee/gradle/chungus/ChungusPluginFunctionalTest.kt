@@ -37,7 +37,7 @@ class ChungusPluginFunctionalTest {
         val runner = GradleRunner.create()
         runner.forwardOutput()
         runner.withPluginClasspath()
-        runner.withArguments("generateOpenApiCode")
+        runner.withArguments("generateOpenApiClients")
         runner.withProjectDir(projectDir)
 
         runner.build()
