@@ -18,9 +18,12 @@ plugins {
 }
             
 chungus {
+    specDir = "chungus/spec"
+    clientDir = "chungus/client"
+    
     services {
         petstore {
-            url = "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml"
+            url = uri("https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml")
             format = "yaml"
 
             client {
